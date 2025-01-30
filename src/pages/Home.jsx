@@ -3,11 +3,27 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
 
+import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
+import { fetchPosts, fetchTags } from '../redux/slices/posts';
 
 export const Home = () => {
+  const dispatch = useDispatch();
+  const { tags, posts } = useSelector((state) => state.posts);
+
+  const isPostLoading = posts.status === 'loading';
+  const istagsLoading = tags.status === 'loading';
+  React.useEffect(() => {
+    dispatch(fetchPosts());
+    dispatch(fetchTags());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log(posts);
+  console.log(tags.items);
+
   return (
     <>
       <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
@@ -16,26 +32,26 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {[...Array(5)].map(() => (
-            <Post
-              id={1}
-              title="Roast the code #1 | Rock Paper Scissors"
-              imageUrl="https://cloudinary-marketing-res.cloudinary.com/image/upload/w_700/musician_interview"
-              user={{
-                avatarUrl:
-                  'https://cloudinary-marketing-res.cloudinary.com/image/upload/c_scale,w_80,h_80/c_scale,w_auto,dpr_auto/f_auto,q_auto/v1682015428/website_2021/developer-mobile-icon.png?_i=AA.png',
-                fullName: 'Keff',
-              }}
-              createdAt={'12 июня 2022 г.'}
-              viewsCount={150}
-              commentsCount={3}
-              tags={['react', 'fun', 'typescript']}
-              isEditable
-            />
-          ))}
+          {(isPostLoading ? [...Array(5)] : posts.items).map((obj, i) =>
+            isPostLoading ? (
+              <Post key={i} isLoading={istagsLoading} />
+            ) : (
+              <Post
+                id={obj._id}
+                title={obj.title}
+                imageUrl="https://cloudinary-marketing-res.cloudinary.com/image/upload/w_700/musician_interview"
+                user={obj.user}
+                createdAt={obj.createdAt}
+                viewsCount={obj.viewsCount}
+                commentsCount={3}
+                tags={obj.tags}
+                isEditable
+              />
+            ),
+          )}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={['react', 'typescript', 'заметки']} isLoading={false} />
+          <TagsBlock items={tags.items} isLoading={false} />
           <CommentsBlock
             items={[
               {
