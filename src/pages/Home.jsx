@@ -39,7 +39,7 @@ export const Home = () => {
               <Post
                 id={obj._id}
                 title={obj.title}
-                imageUrl="https://cloudinary-marketing-res.cloudinary.com/image/upload/w_700/musician_interview"
+                imageUrl={obj.imageUrl}
                 user={obj.user}
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}

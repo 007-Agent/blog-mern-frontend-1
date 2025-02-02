@@ -3,9 +3,10 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
-
+import { selectIsAuth } from '../../redux/slices/Auth';
+import { useSelector } from 'react-redux';
 export const Header = () => {
-  const isAuth = false;
+  const isAuth = useSelector(selectIsAuth);
 
   const onClickLogout = () => {};
 
